@@ -30,64 +30,88 @@ void Primitive_DrawFilledRect(SDL_Renderer *renderer, int x, int y,
     SDL_RenderFillRect(renderer, &rect);
 }
 
-void Primitive_DrawCircle(SDL_Renderer *renderer, int x, int y, 
-                          int radius, Primitive_Color color)
-{
-    int origin_x = x - radius; 
-    int origin_y = y - radius; 
-
-    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a); 
-
-    for (int i = origin_y; i < 2 * radius; ++i)
-    {
-        for (int j = origin_x; j < 2 * radius; ++j)
-        {
-            int current_y = (i - y > 0) ? (i - y) : -(i - y);
-            int current_x = (j - x > 0) ? (j - x) : -(j - x);
-
-            if (current_y == radius && current_x == radius)
-            {
-                SDL_RenderDrawPoint(renderer, i, j);
-            }
-        }
-    }
-}
-
-void Primitive_DrawFilledCircle(SDL_Renderer *renderer, int x, int y, 
-                                int radius, Primitive_Color color)
-{
-    int origin_x = x - radius; 
-    int origin_y = y - radius; 
-
-    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a); 
-
-    for (int i = origin_y; i < 2 * radius; ++i)
-    {
-        for (int j = origin_x; j < 2 * radius; ++j)
-        {
-            int current_y = (i - y > 0) ? (i - y) : -(i - y);
-            int current_x = (j - x > 0) ? (j - x) : -(j - x);
-
-            if (current_y <= radius && current_x <= radius)
-            {
-                SDL_RenderDrawPoint(renderer, i, j);
-            }
-        }
-    }
-}
-
-void drawCircle(int xc, int yc, int x, int y) 
+void Primitive_PlotCirclePoints(SDL_Renderer *renderer, int center_x, int center_y, 
+                                         int x, int y, Primitive_Color color) 
 { 
-    SDL_RenderDrawPoint(xc+x, yc+y, RED); 
-    SDL_RenderDrawPoint(xc-x, yc+y, RED); 
-    SDL_RenderDrawPoint(xc+x, yc-y, RED); 
-    SDL_RenderDrawPoint(xc-x, yc-y, RED); 
-    SDL_RenderDrawPoint(xc+y, yc+x, RED); 
-    SDL_RenderDrawPoint(xc-y, yc+x, RED); 
-    SDL_(xc+y, yc-x, RED); 
-    putpixel(xc-y, yc-x, RED); 
+    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a); 
+
+    SDL_RenderDrawPoint(renderer, center_x + x, center_y + y); 
+    SDL_RenderDrawPoint(renderer, center_x - x, center_y + y); 
+    SDL_RenderDrawPoint(renderer, center_x + x, center_y - y); 
+    SDL_RenderDrawPoint(renderer, center_x - x, center_y - y); 
+    SDL_RenderDrawPoint(renderer, center_x + y, center_y + x); 
+    SDL_RenderDrawPoint(renderer, center_x - y, center_y + x); 
+    SDL_RenderDrawPoint(renderer, center_x + y, center_y - x); 
+    SDL_RenderDrawPoint(renderer, center_x - y, center_y - x); 
 } 
 
+void Primitive_DrawCircleLines(SDL_Renderer *renderer, int center_x, int center_y, 
+                               int x, int y, Primitive_Color color) 
+{ 
+    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a); 
+
+    // NOTE: currently not filling in the enitre circle (near 45 degrees) because line is 1px thick
+    SDL_RenderDrawLine(renderer, center_x + y, center_y + x, center_x - y, center_y - x);
+    SDL_RenderDrawLine(renderer, center_x + x, center_y + y, center_x - x, center_y - y);
+    SDL_RenderDrawLine(renderer, center_x + x, center_y - y, center_x - x, center_y + y);
+    SDL_RenderDrawLine(renderer, center_x + y, center_y - x, center_x - y, center_y + x);
+} 
+
+void Primitive_DrawCircle(SDL_Renderer *renderer, int center_x, int center_y, 
+                          int radius, Primitive_Color color)
+{
+    int x = 0; 
+    int y = radius; 
+    int decision = 3 - 2 * radius; 
+
+    Primitive_PlotCirclePoints(renderer, center_x, center_y, x, y, color); 
+
+    while (x <= y)
+    {
+        x++; 
+
+        if (decision > 0)
+        {
+            y--;
+
+            decision += 4 * (x - y) + 10; 
+        }
+        else 
+        {
+            decision += 4 * x + 6; 
+        }
+
+        Primitive_PlotCirclePoints(renderer, center_x, center_y, x, y, color); 
+    }
+}
+
+void Primitive_DrawFilledCircle(SDL_Renderer *renderer, int center_x, int center_y, 
+                                int radius, Primitive_Color color)
+{
+    int x = 0; 
+    int y = radius; 
+    int decision = 3 - 2 * radius; 
+
+    Primitive_DrawCircleLines(renderer, center_x, center_y, x, y, color); 
+
+    while (x <= y)
+    {
+        x++; 
+
+        if (decision > 0)
+        {
+            y--;
+
+            decision += 4 * (x - y) + 10; 
+        }
+        else 
+        {
+            decision += 4 * x + 6; 
+        }
+
+        Primitive_DrawCircleLines(renderer, center_x, center_y, x, y, color); 
+    }
+}
 
  // void Primitive_Triangle(SDL_Renderer, Primitive_Point, Primitive_Point, Primitive_Point, Primitive_Color); 
  // void Primitive_TriangleFilled(SDL_Renderer, Primitive_Point, Primitive_Point, Primitive_Point, Primitive_Color); 
