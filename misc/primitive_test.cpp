@@ -32,10 +32,7 @@ int main(int argc, char **argv)
 
                 Primitive_Color color = { 255, 255, 0, 255 }; 
 
-                //Primitive_DrawLine(renderer, 10, 10, 200, 200, color);
-                Primitive_DrawFilledCircle(renderer, 250, 250, 150, color);
-                //Primitive_DrawFilledCircle(renderer, 100, 20, 100, 100, color);
-
+                Primitive_DrawFilledTriangle(renderer, 10, 10, 200, 50, 100, 100, color);
 
                 SDL_RenderPresent(renderer); 
             }
