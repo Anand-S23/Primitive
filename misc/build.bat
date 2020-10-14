@@ -2,7 +2,7 @@
 
 set DIRECT=..\misc
 set TARGET=x64
-set TARGET_PATH=x64
+set TARGET_PATH=solo_x64
 
 :: SDL2 libraries and include paths 
 set SDL2_LIB=W:\SDL2
