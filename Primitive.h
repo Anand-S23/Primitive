@@ -7,6 +7,20 @@ struct Primitive_Color {
     int a; 
 };
 
+// Clears screen to color
+void Primitive_Clear(SDL_Renderer *renderer, Primitive_Color color)
+{
+    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+    SDL_RenderClear(renderer);
+}
+
+// Draws point at (x, y) 
+void Primitie_DrawPoint(SDL_Renderer *renderer, int x, int y, color)
+{
+    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+    SDL_RenderDrawPoint(renderer, x, y); 
+}
+
 // Draws line from (x1, y1) to (x2, y2) 
 void Primitive_DrawLine(SDL_Renderer *renderer, int x1, int y1, 
                     int x2, int y2, Primitive_Color color)
