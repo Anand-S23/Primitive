@@ -7,6 +7,14 @@ struct Primitive_Color {
     int a; 
 };
 
+static Primitive_Color PrimitiveColor(int r, int g, int b, int a)
+{
+    Primitive_Color color = { r, g, b, a };
+    return color;
+}
+#define P_Color(r, g, b, a) PrimitiveColor(r, g, b, a)
+
+
 // Clears screen to color
 void Primitive_Clear(SDL_Renderer *renderer, Primitive_Color color)
 {
@@ -15,7 +23,7 @@ void Primitive_Clear(SDL_Renderer *renderer, Primitive_Color color)
 }
 
 // Draws point at (x, y) 
-void Primitie_DrawPoint(SDL_Renderer *renderer, int x, int y, color)
+void Primitie_DrawPoint(SDL_Renderer *renderer, int x, int y, Primitive_Color color)
 {
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
     SDL_RenderDrawPoint(renderer, x, y); 
